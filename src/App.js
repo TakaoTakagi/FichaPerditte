@@ -46,8 +46,10 @@ function App() {
       salvarFicha(user.uid, personagem);
     }
   }, [personagem, user]);
-
-  if (!user) return <auth user={user} setUser={setUser} />;
+useEffect(() => {
+  // Simula login só para teste
+  setUser({ uid: "123", email: "teste@email.com" });
+}, []);
 
   return (
     <div className="flex flex-row items-start gap-8 p-8">
