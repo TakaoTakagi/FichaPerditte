@@ -47,7 +47,7 @@ function App() {
     }
   }, [personagem, user]);
 
-  if (!user) return <Auth user={user} setUser={setUser} />;
+  if (!user) return <auth user={user} setUser={setUser} />;
 
   return (
     <div className="flex flex-row items-start gap-8 p-8">
