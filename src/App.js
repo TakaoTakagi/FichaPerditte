@@ -2,7 +2,7 @@ import { salvarFicha, carregarFicha } from './firebaseService';
 import { useState, useEffect } from "react";
 import { auth } from './firebase';
 import CharacterSheet from "./components/CharacterSheet";
-
+// sex
 function App() {
   const [user, setUser] = useState(null);
   const [characterName, setCharacterName] = useState("Sobrevivente");
@@ -48,12 +48,12 @@ function App() {
   }, [personagem, user]);
 // if (!user) return <auth user={user} setUser={setUser} />;  // ❌ REMOVER
 
+HEAD
 return (
-  <div className="flex flex-row items-start gap-8 p-8">
-    ...
+  <div>
+    Teste com AppTeste
   </div>
 );
-
   return (
     <div className="flex flex-row items-start gap-8 p-8">
       {/* Lateral esquerda - informações do usuário */}
