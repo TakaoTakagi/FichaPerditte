@@ -46,10 +46,13 @@ function App() {
       salvarFicha(user.uid, personagem);
     }
   }, [personagem, user]);
-useEffect(() => {
-  // Simula login só para teste
-  setUser({ uid: "123", email: "teste@email.com" });
-}, []);
+// if (!user) return <auth user={user} setUser={setUser} />;  // ❌ REMOVER
+
+return (
+  <div className="flex flex-row items-start gap-8 p-8">
+    ...
+  </div>
+);
 
   return (
     <div className="flex flex-row items-start gap-8 p-8">
