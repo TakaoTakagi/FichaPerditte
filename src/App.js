@@ -1,9 +1,5 @@
-import { salvarFicha, carregarFicha } from './firebaseService';
-import { useState, useEffect } from "react";
-import { auth } from './firebase';
-import CharacterSheet from "./components/CharacterSheet";
-// sex
 function App() {
+HEAD
   const [user, setUser] = useState(null);
   const [characterName, setCharacterName] = useState("Sobrevivente");
   const [personagem, setPersonagem] = useState({
@@ -54,34 +50,6 @@ return (
     Teste com AppTeste
   </div>
 );
-  return (
-    <div className="flex flex-row items-start gap-8 p-8">
-      {/* Lateral esquerda - informações do usuário */}
-      <div className="flex flex-col gap-4 text-sm">
-        <p className="text-gray-600 italic">Logado como: {user.email}</p>
-
-        <label className="flex flex-col gap-1">
-          Nome do personagem:
-          <input
-            type="text"
-            value={characterName}
-            onChange={(e) => setCharacterName(e.target.value)}
-            className="border px-2 py-1 rounded"
-          />
-        </label>
-
-        <button
-          onClick={() => setUser(null)}
-          className="bg-red-500 text-white px-4 py-1 rounded w-fit"
-        >
-          Sair
-        </button>
-      </div>
-
-      {/* Área do personagem */}
-      <CharacterSheet personagem={personagem} />
-    </div>
-  );
 }
 
 export default App;
