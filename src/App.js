@@ -30,19 +30,17 @@ function App() {
   const [password, setPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false); // modo registro ou login
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((usr) => {
-      setUser(usr);
-      if (usr) {
-        if (usr.uid !== UID_MESTRE) {
-          setViewingUid(usr.uid);
-        }
-      } else {
-        setViewingUid(null);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
+useEffect(() => {
+  const unsubscribe = auth.onAuthStateChanged((usr) => {
+    setUser(usr);
+    if (usr) {
+      setViewingUid(usr.uid); // sempre define, mestre ou não
+    } else {
+      setViewingUid(null);
+    }
+  });
+  return () => unsubscribe();
+}, []);
 
  // fora do useEffect
 const fetchFicha = async (uidAlvo) => {
