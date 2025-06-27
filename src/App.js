@@ -1,22 +1,4 @@
-import { auth, provider } from './firebase';
-import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-import { useState, useEffect } from "react";
-import { salvarFicha, carregarFicha } from './firebaseService';
-import CharacterSheet from "./components/CharacterSheet";
-
-const UID_MESTRE = "qE5LJAbFhMabgBuoYNx9w9pSwv52";
-
-const personagemPadrao = {
-  nome: "Sobrevivente",
-  partes: {
-    head: { current: 4, max: 4 },
-    torso: { current: 8, max: 8 },
-    leftArm: { current: 5, max: 5 },
-    rightArm: { current: 5, max: 5 },
-    leftLeg: { current: 6, max: 6 },
-    rightLeg: { current: 6, max: 6 }
-  }
-};
+// ... [importações e constantes inalteradas] ...
 
 function App() {
   const [user, setUser] = useState(null);
@@ -25,7 +7,6 @@ function App() {
   const [characterName, setCharacterName] = useState("Sobrevivente");
   const [salvando, setSalvando] = useState(false);
 
-  // Novo estado para mestre ver múltiplas fichas
   const [uidsParaVisualizar, setUidsParaVisualizar] = useState('');
   const [fichasMestre, setFichasMestre] = useState({});
 
@@ -36,11 +17,8 @@ function App() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((usr) => {
       setUser(usr);
-      if (usr) {
-        setViewingUid(usr.uid);
-      } else {
-        setViewingUid(null);
-      }
+      if (usr) setViewingUid(usr.uid);
+      else setViewingUid(null);
     });
     return () => unsubscribe();
   }, []);
@@ -83,12 +61,17 @@ function App() {
     }
   };
 
-  const carregarVariasFichas = async () => {
-    const uids = uidsParaVisualizar
-      .split(',')
-      .map(u => u.trim())
-      .filter(u => u.length > 0);
+  const handleSalvarIndividual = async (uid, ficha) => {
+    try {
+      await salvarFicha(uid, ficha, user.uid);
+      alert(`Ficha de ${ficha.nome || uid} salva com sucesso!`);
+    } catch (e) {
+      alert("Erro ao salvar ficha: " + e.message);
+    }
+  };
 
+  const carregarVariasFichas = async () => {
+    const uids = uidsParaVisualizar.split(',').map(u => u.trim()).filter(Boolean);
     const novasFichas = {};
     for (const uid of uids) {
       const ficha = await carregarFicha(uid, user.uid);
@@ -174,36 +157,46 @@ function App() {
             <button onClick={carregarVariasFichas} className="mt-2 bg-blue-600 text-white px-4 py-1 rounded">Carregar Fichas</button>
           </div>
 
-          {Object.entries(fichasMestre).map(([uid, ficha]) => (
-            <div key={uid} className="border rounded p-4 shadow bg-white">
-              <p className="text-sm text-gray-500 mb-2">UID: {uid}</p>
-              <div className="mb-2">
-  <label className="text-sm font-semibold mr-2">Nome:</label>
-  <input
-    type="text"
-    value={ficha.nome || "Sobrevivente"}
-    onChange={(e) => {
-      const novoNome = e.target.value;
-      setFichasMestre(prev => ({
-        ...prev,
-        [uid]: { ...prev[uid], nome: novoNome }
-      }));
-    }}
-    className="border px-2 py-1 rounded"
-  />
-</div>
-<CharacterSheet
-  personagem={ficha}
-  setPersonagem={(novaFicha) =>
-    setFichasMestre(prev => ({
-      ...prev,
-      [uid]: { ...novaFicha }
-    }))
-  }
-/>
+          <div className="flex flex-wrap gap-4">
+            {Object.entries(fichasMestre).map(([uid, ficha]) => (
+              <div key={uid} className="border rounded p-4 shadow bg-white w-full md:w-[45%]">
+                <p className="text-sm text-gray-500 mb-2">UID: {uid}</p>
 
-            </div>
-          ))}
+                <div className="mb-2">
+                  <label className="text-sm font-semibold mr-2">Nome:</label>
+                  <input
+                    type="text"
+                    value={ficha.nome || "Sobrevivente"}
+                    onChange={(e) => {
+                      const novoNome = e.target.value;
+                      setFichasMestre(prev => ({
+                        ...prev,
+                        [uid]: { ...prev[uid], nome: novoNome }
+                      }));
+                    }}
+                    className="border px-2 py-1 rounded"
+                  />
+                </div>
+
+                <button
+                  onClick={() => handleSalvarIndividual(uid, ficha)}
+                  className="mb-4 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded"
+                >
+                  Salvar Ficha
+                </button>
+
+                <CharacterSheet
+                  personagem={ficha}
+                  setPersonagem={(novaFicha) =>
+                    setFichasMestre(prev => ({
+                      ...prev,
+                      [uid]: { ...novaFicha }
+                    }))
+                  }
+                />
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
