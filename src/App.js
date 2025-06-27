@@ -44,21 +44,25 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    async function fetchFicha() {
-      if (user && viewingUid) {
-        const fichaSalva = await carregarFicha(viewingUid, user.uid);
-        if (fichaSalva) {
-          setPersonagem(fichaSalva);
-          setCharacterName(fichaSalva.nome || "Sobrevivente");
-        } else {
-          setPersonagem(personagemPadrao);
-          setCharacterName("Sobrevivente");
-        }
-      }
+ // fora do useEffect
+const fetchFicha = async (uidAlvo) => {
+  if (user && uidAlvo) {
+    const fichaSalva = await carregarFicha(uidAlvo, user.uid);
+    if (fichaSalva) {
+      setPersonagem(fichaSalva);
+      setCharacterName(fichaSalva.nome || "Sobrevivente");
+    } else {
+      setPersonagem(personagemPadrao);
+      setCharacterName("Sobrevivente");
     }
-    fetchFicha();
-  }, [user, viewingUid]);
+  }
+};
+// ainda mantenha o carregamento automático ao logar
+useEffect(() => {
+  if (user && viewingUid) {
+    fetchFicha(viewingUid);
+  }
+}, [user, viewingUid]);
 
   // Função para salvar ficha manualmente
   const handleSalvar = async () => {
@@ -183,6 +187,12 @@ function App() {
               placeholder="Digite o UID do jogador"
               className="border px-2 py-1 rounded ml-2"
             />
+            <button
+  className="bg-blue-500 text-white px-3 py-1 rounded mt-2"
+  onClick={() => fetchFicha(viewingUid)}
+>
+  Buscar Ficha
+</button>
           </label>
         </div>
       )}
