@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const getImageName = (part, current, max) => {
   const percentage = current / max;
@@ -14,108 +14,123 @@ const getImageName = (part, current, max) => {
 };
 
 const CharacterSheet = ({ personagem }) => {
-  const [status, setStatus] = useState(personagem.partes);
+  // Estado local para partes (vida atual/max)
+  const [status, setStatus] = useState(personagem?.partes || {});
+
+  // Atualiza status sempre que personagem mudar
+  useEffect(() => {
+    setStatus(personagem?.partes || {});
+  }, [personagem]);
+
   const changeHealth = (part, delta) => {
     setStatus((prev) => {
+      // Protege contra partes indefinidas
+      if (!prev[part]) return prev;
+
       const nova = { ...prev[part] };
       nova.current = Math.max(0, Math.min(nova.max, nova.current + delta));
       return { ...prev, [part]: nova };
     });
   };
 
-  // ⬇️ Essa função é usada para renderizar cada parte
- const renderPart = (part, top, left, width) => {
-  const { current, max } = status[part];
-  const imageName = getImageName(part, current, max);
+  // Renderiza uma parte do corpo com controles e imagem
+  const renderPart = (part, top, left, width) => {
+    if (!status[part]) return null; // evita erro se parte não existir
 
-  // Estilo do controle (botões e número)
-  let controlStyle = {};
+    const { current, max } = status[part];
+    const imageName = getImageName(part, current, max);
 
-  switch (part) {
-    case 'head':
-      controlStyle = {
-        top: '10px',
-        left: 'calc(100% + 5px)', // ao lado da cabeça
-      };
-      break;
-    case 'torso':
-      controlStyle = {
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)', // centralizado sobre o torso
-      };
-      break;
-    case 'leftArm':
-      controlStyle = {
-        top: '50%',
-        left: '-60px', // à esquerda
-        transform: 'translateY(-50%)',
-      };
-      break;
-    case 'rightArm':
-      controlStyle = {
-        top: '50%',
-        left: '100%', // à direita
-        transform: 'translateY(-50%)',
-      };
-      break;
-    case 'leftLeg':
-      controlStyle = {
-        top: '50%',
-        left: '-60px',
-        transform: 'translateY(-50%)',
-      };
-      break;
-    case 'rightLeg':
-      controlStyle = {
-        top: '50%',
-        left: '100%',
-        transform: 'translateY(-50%)',
-      };
-      break;
-  }
+    let controlStyle = {};
 
-  return (
-    <div
-      key={part}
-      className="absolute"
-      style={{
-        top,
-        left,
-        width,
-        position: 'absolute',
-        zIndex: part === 'torso' ? 20 : 10,
-      }}
-    >
-      {/* Controles */}
+    switch (part) {
+      case 'head':
+        controlStyle = {
+          top: '10px',
+          left: 'calc(100% + 5px)',
+        };
+        break;
+      case 'torso':
+        controlStyle = {
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        };
+        break;
+      case 'leftArm':
+        controlStyle = {
+          top: '50%',
+          left: '-60px',
+          transform: 'translateY(-50%)',
+        };
+        break;
+      case 'rightArm':
+        controlStyle = {
+          top: '50%',
+          left: '100%',
+          transform: 'translateY(-50%)',
+        };
+        break;
+      case 'leftLeg':
+        controlStyle = {
+          top: '50%',
+          left: '-60px',
+          transform: 'translateY(-50%)',
+        };
+        break;
+      case 'rightLeg':
+        controlStyle = {
+          top: '50%',
+          left: '100%',
+          transform: 'translateY(-50%)',
+        };
+        break;
+    }
+
+    return (
       <div
-        className="absolute flex items-center gap-1 text-xs bg-white px-1 rounded shadow"
+        key={part}
+        className="absolute"
         style={{
+          top,
+          left,
+          width,
           position: 'absolute',
-          ...controlStyle,
-          zIndex: 30,
-        }}
-      >
-        <button onClick={() => changeHealth(part, -1)} className="text-red-500">-</button>
-        <span>{current}/{max}</span>
-        <button onClick={() => changeHealth(part, 1)} className="text-green-500">+</button>
-      </div>
-
-      {/* Imagem */}
-      <img
-        src={`/parts/${imageName}`}
-        alt={part}
-        style={{
-          width: width,
-          transform: 'none',
           zIndex: part === 'torso' ? 20 : 10,
         }}
-      />
-    </div>
-  );
-};
+      >
+        {/* Controles de vida */}
+        <div
+          className="absolute flex items-center gap-1 text-xs bg-white px-1 rounded shadow"
+          style={{
+            position: 'absolute',
+            ...controlStyle,
+            zIndex: 30,
+          }}
+        >
+          <button onClick={() => changeHealth(part, -1)} className="text-red-500">-</button>
+          <span>{current}/{max}</span>
+          <button onClick={() => changeHealth(part, 1)} className="text-green-500">+</button>
+        </div>
 
-  // ⬇️ Esse é o return final do componente
+        {/* Imagem da parte */}
+        <img
+          src={`/parts/${imageName}`}
+          alt={part}
+          style={{
+            width: width,
+            transform: 'none',
+            zIndex: part === 'torso' ? 20 : 10,
+          }}
+        />
+      </div>
+    );
+  };
+
+  // Caso personagem seja null ou não tenha partes, pode mostrar mensagem ou algo neutro:
+  if (!personagem || !personagem.partes || Object.keys(status).length === 0) {
+    return <p>Carregando ficha...</p>;
+  }
+
   return (
     <div className="flex flex-col items-center gap-4 p-4">
       <h2 className="text-xl font-bold">{personagem.nome}</h2>
@@ -130,4 +145,5 @@ const CharacterSheet = ({ personagem }) => {
     </div>
   );
 };
+
 export default CharacterSheet;

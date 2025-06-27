@@ -1,24 +1,34 @@
 import { db } from './firebase';
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
-export const salvarFicha = async (uid, ficha) => {
+const UID_MESTRE = "qE5LJAbFhMabgBuoYNx9w9pSwv52";
+
+export async function salvarFicha(uid, ficha) {
+  const docRef = doc(db, 'fichas', uid);
   try {
-    await setDoc(doc(db, 'fichas', uid), ficha);
+    await setDoc(docRef, ficha);
   } catch (error) {
-    console.error('Erro ao salvar ficha:', error);
+    console.error("Erro ao salvar ficha:", error);
   }
-};
+}
 
-export const carregarFicha = async (uid) => {
+export async function carregarFicha(uidSolicitado, uidAtual) {
+  // Permitir que o mestre veja qualquer ficha
+  if (uidAtual !== uidSolicitado && uidAtual !== UID_MESTRE) {
+    console.error("Permissão negada para acessar a ficha.");
+    return null;
+  }
+
+  const docRef = doc(db, 'fichas', uidSolicitado);
   try {
-    const docSnap = await getDoc(doc(db, 'fichas', uid));
-    if (docSnap.exists()) {
-      return docSnap.data();
+    const snapshot = await getDoc(docRef);
+    if (snapshot.exists()) {
+      return snapshot.data();
     } else {
       return null;
     }
   } catch (error) {
-    console.error('Erro ao carregar ficha:', error);
+    console.error("Erro ao carregar ficha:", error);
     return null;
   }
-};
+}

@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import AppTeste from "./AppTeste";  // ✅ usa o AppTeste
+import App from "./App";  // ✅ usa o AppTeste
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <AppTeste />
+    <App />
   </React.StrictMode>
 );
 

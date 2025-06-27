@@ -1,7 +1,6 @@
-// src/firebase.js
 import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD2xyCO24rgr76x0CYUUIQIjgv0aUHbEbQ",
@@ -12,8 +11,16 @@ const firebaseConfig = {
   appId: "1:681234689710:web:1654b2b21740267a2a873f"
 };
 
+// Inicializa o app Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+
+// Autenticação
 const auth = getAuth(app);
 
-export { db, auth };
+// Provider do Google para login social
+const provider = new GoogleAuthProvider();
+
+// Firestore (banco de dados)
+const db = getFirestore(app);
+
+export { auth, db, provider };
