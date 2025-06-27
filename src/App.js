@@ -21,8 +21,9 @@ const personagemPadrao = {
 function App() {
   const [user, setUser] = useState(null);
   const [viewingUid, setViewingUid] = useState(null);
-  const [characterName, setCharacterName] = useState("Sobrevivente");
   const [personagem, setPersonagem] = useState(personagemPadrao);
+  const [characterName, setCharacterName] = useState("Sobrevivente");
+  const [salvando, setSalvando] = useState(false);
 
   // Estados para login por email e senha
   const [email, setEmail] = useState('');
@@ -30,11 +31,9 @@ function App() {
   const [isRegistering, setIsRegistering] = useState(false); // modo registro ou login
 
   useEffect(() => {
-    // Escuta mudanças de autenticação
     const unsubscribe = auth.onAuthStateChanged((usr) => {
       setUser(usr);
       if (usr) {
-        // Se for mestre, não altera o viewingUid aqui, pois mestre escolhe
         if (usr.uid !== UID_MESTRE) {
           setViewingUid(usr.uid);
         }
@@ -61,11 +60,26 @@ function App() {
     fetchFicha();
   }, [user, viewingUid]);
 
-  useEffect(() => {
-    if (user && personagem && viewingUid) {
-      salvarFicha(viewingUid, personagem);
+  // Função para salvar ficha manualmente
+  const handleSalvar = async () => {
+    if (!user || !personagem || !viewingUid) return;
+
+    // Só salva se for dono da ficha ou mestre
+    if (user.uid !== viewingUid && user.uid !== UID_MESTRE) {
+      alert("Você não tem permissão para salvar essa ficha.");
+      return;
     }
-  }, [personagem, user, viewingUid]);
+
+    setSalvando(true);
+    try {
+      await salvarFicha(viewingUid, personagem, user.uid);
+      alert("Ficha salva com sucesso!");
+    } catch (e) {
+      alert("Erro ao salvar ficha: " + e.message);
+    } finally {
+      setSalvando(false);
+    }
+  };
 
   // Funções de login:
   const loginGoogle = () => {
@@ -83,7 +97,6 @@ function App() {
       .catch(err => alert('Erro ao registrar: ' + err.message));
   };
 
-  // Se não estiver logado, mostrar tela de login:
   if (!user) {
     return (
       <div className="p-8 max-w-md mx-auto">
@@ -174,10 +187,8 @@ function App() {
         </div>
       )}
 
-      {/* Se não for mestre e viewingUid estiver vazio (pode acontecer no primeiro render), seta para user.uid */}
       {!isMestre && !viewingUid && (
         <div>
-          {/* Usamos useEffect para evitar setState dentro do render */}
           <SetViewingUidToUser setViewingUid={setViewingUid} userUid={user.uid} />
         </div>
       )}
@@ -187,14 +198,24 @@ function App() {
         <input
           type="text"
           value={characterName}
-          onChange={(e) => setCharacterName(e.target.value)}
+          onChange={(e) => {
+            setCharacterName(e.target.value);
+            setPersonagem(prev => ({ ...prev, nome: e.target.value }));
+          }}
           className="border px-2 py-1 rounded ml-2"
         />
       </label>
 
-      {/* Proteção para garantir personagem e partes existem */}
+      <button
+        onClick={handleSalvar}
+        disabled={salvando}
+        className={`px-4 py-2 rounded text-white ${salvando ? 'bg-gray-500 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
+      >
+        {salvando ? "Salvando..." : "Salvar Ficha"}
+      </button>
+
       {personagem && personagem.partes ? (
-        <CharacterSheet personagem={personagem} />
+        <CharacterSheet personagem={personagem} setPersonagem={setPersonagem} />
       ) : (
         <p>Ficha não carregada.</p>
       )}
@@ -202,7 +223,6 @@ function App() {
   );
 }
 
-// Componente auxiliar para setar viewingUid fora do render principal
 function SetViewingUidToUser({ setViewingUid, userUid }) {
   useEffect(() => {
     setViewingUid(userUid);

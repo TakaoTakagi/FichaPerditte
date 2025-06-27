@@ -3,8 +3,14 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const UID_MESTRE = "qE5LJAbFhMabgBuoYNx9w9pSwv52";
 
-export async function salvarFicha(uid, ficha) {
-  const docRef = doc(db, 'fichas', uid);
+// Agora salvarFicha recebe uidAtual para checar permissão
+export async function salvarFicha(uidParaSalvar, ficha, uidAtual) {
+  if (uidAtual !== uidParaSalvar && uidAtual !== UID_MESTRE) {
+    console.error("Permissão negada para salvar ficha.");
+    return; // Sai sem salvar
+  }
+
+  const docRef = doc(db, 'fichas', uidParaSalvar);
   try {
     await setDoc(docRef, ficha);
   } catch (error) {

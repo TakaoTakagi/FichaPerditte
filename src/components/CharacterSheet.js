@@ -13,29 +13,69 @@ const getImageName = (part, current, max) => {
   return `${part}_${level}.png`;
 };
 
-const CharacterSheet = ({ personagem }) => {
-  // Estado local para partes (vida atual/max)
+const CharacterSheet = ({ personagem, setPersonagem }) => {
   const [status, setStatus] = useState(personagem?.partes || {});
 
-  // Atualiza status sempre que personagem mudar
   useEffect(() => {
     setStatus(personagem?.partes || {});
   }, [personagem]);
 
+  // Altera current (vida atual), garantindo que não ultrapasse max ou seja menor que 0
   const changeHealth = (part, delta) => {
-    setStatus((prev) => {
-      // Protege contra partes indefinidas
+    setStatus(prev => {
       if (!prev[part]) return prev;
 
       const nova = { ...prev[part] };
       nova.current = Math.max(0, Math.min(nova.max, nova.current + delta));
-      return { ...prev, [part]: nova };
+
+      const novoStatus = { ...prev, [part]: nova };
+      setPersonagem(old => ({ ...old, partes: novoStatus }));
+
+      return novoStatus;
     });
   };
 
-  // Renderiza uma parte do corpo com controles e imagem
+  // Altera max (vida máxima), ajustando current caso necessário
+  const changeMaxHealth = (part, newMax) => {
+    setStatus(prev => {
+      if (!prev[part]) return prev;
+
+      let maxNumber = parseInt(newMax, 10);
+      if (isNaN(maxNumber) || maxNumber < 1) maxNumber = 1; // mínimo 1
+
+      const nova = { ...prev[part] };
+      nova.max = maxNumber;
+
+      // Ajusta current para não ultrapassar max
+      if (nova.current > maxNumber) nova.current = maxNumber;
+
+      const novoStatus = { ...prev, [part]: nova };
+      setPersonagem(old => ({ ...old, partes: novoStatus }));
+
+      return novoStatus;
+    });
+  };
+
+  const changeCurrentHealth = (part, newCurrent) => {
+    setStatus(prev => {
+      if (!prev[part]) return prev;
+
+      let currentNumber = parseInt(newCurrent, 10);
+      if (isNaN(currentNumber)) currentNumber = 0;
+
+      if (currentNumber < 0) currentNumber = 0;
+      if (currentNumber > prev[part].max) currentNumber = prev[part].max;
+
+      const nova = { ...prev[part], current: currentNumber };
+      const novoStatus = { ...prev, [part]: nova };
+      setPersonagem(old => ({ ...old, partes: novoStatus }));
+
+      return novoStatus;
+    });
+  };
+
   const renderPart = (part, top, left, width) => {
-    if (!status[part]) return null; // evita erro se parte não existir
+    if (!status[part]) return null;
 
     const { current, max } = status[part];
     const imageName = getImageName(part, current, max);
@@ -44,89 +84,73 @@ const CharacterSheet = ({ personagem }) => {
 
     switch (part) {
       case 'head':
-        controlStyle = {
-          top: '10px',
-          left: 'calc(100% + 5px)',
-        };
+        controlStyle = { top: '10px', left: 'calc(100% + 5px)' };
         break;
       case 'torso':
-        controlStyle = {
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-        };
+        controlStyle = { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
         break;
       case 'leftArm':
-        controlStyle = {
-          top: '50%',
-          left: '-60px',
-          transform: 'translateY(-50%)',
-        };
+        controlStyle = { top: '50%', left: '-60px', transform: 'translateY(-50%)' };
         break;
       case 'rightArm':
-        controlStyle = {
-          top: '50%',
-          left: '100%',
-          transform: 'translateY(-50%)',
-        };
+        controlStyle = { top: '50%', left: '100%', transform: 'translateY(-50%)' };
         break;
       case 'leftLeg':
-        controlStyle = {
-          top: '50%',
-          left: '-60px',
-          transform: 'translateY(-50%)',
-        };
+        controlStyle = { top: '50%', left: '-60px', transform: 'translateY(-50%)' };
         break;
       case 'rightLeg':
-        controlStyle = {
-          top: '50%',
-          left: '100%',
-          transform: 'translateY(-50%)',
-        };
+        controlStyle = { top: '50%', left: '100%', transform: 'translateY(-50%)' };
         break;
+      default:
+        controlStyle = {};
     }
 
     return (
       <div
         key={part}
         className="absolute"
-        style={{
-          top,
-          left,
-          width,
-          position: 'absolute',
-          zIndex: part === 'torso' ? 20 : 10,
-        }}
+        style={{ top, left, width, position: 'absolute', zIndex: part === 'torso' ? 20 : 10 }}
       >
-        {/* Controles de vida */}
         <div
-          className="absolute flex items-center gap-1 text-xs bg-white px-1 rounded shadow"
-          style={{
-            position: 'absolute',
-            ...controlStyle,
-            zIndex: 30,
-          }}
+          className="absolute flex flex-col gap-1 bg-white px-2 py-1 rounded shadow"
+          style={{ position: 'absolute', ...controlStyle, zIndex: 30, width: '110px' }}
         >
-          <button onClick={() => changeHealth(part, -1)} className="text-red-500">-</button>
-          <span>{current}/{max}</span>
-          <button onClick={() => changeHealth(part, 1)} className="text-green-500">+</button>
-        </div>
+          <div className="flex items-center justify-between">
+            <button onClick={() => changeHealth(part, -1)} className="text-red-500 font-bold px-2 rounded hover:bg-red-100">-</button>
+           <input
+  type="number"
+  value={current}
+  onChange={(e) => changeCurrentHealth(part, e.target.value)}
+  style={{ width: '20px' }}
+  className="text-center border rounded"
+  min={0}
+  max={max}
+/>
 
-        {/* Imagem da parte */}
+            <button onClick={() => changeHealth(part, 1)} className="text-green-500 font-bold px-2 rounded hover:bg-green-100">+</button>
+          </div>
+          <div className="flex items-center justify-between">
+            <label className="text-xs mr-2">Max:</label>
+         <input
+         type="number"
+          value={max}
+           onChange={(e) => changeMaxHealth(part, e.target.value)}
+           style= {{ width: '20px' }}     // largura customizada menor
+          className="text-center border rounded"
+           min={1}
+/>
+
+          </div>
+        </div>
         <img
           src={`/parts/${imageName}`}
           alt={part}
-          style={{
-            width: width,
-            transform: 'none',
-            zIndex: part === 'torso' ? 20 : 10,
-          }}
+          style={{ width: width, transform: 'none', zIndex: part === 'torso' ? 20 : 10 }}
         />
       </div>
     );
   };
 
-  // Caso personagem seja null ou não tenha partes, pode mostrar mensagem ou algo neutro:
   if (!personagem || !personagem.partes || Object.keys(status).length === 0) {
     return <p>Carregando ficha...</p>;
   }
