@@ -25,48 +25,48 @@ function App() {
   const [characterName, setCharacterName] = useState("Sobrevivente");
   const [salvando, setSalvando] = useState(false);
 
-  // Estados para login por email e senha
+  // Novo estado para mestre ver múltiplas fichas
+  const [uidsParaVisualizar, setUidsParaVisualizar] = useState('');
+  const [fichasMestre, setFichasMestre] = useState({});
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isRegistering, setIsRegistering] = useState(false); // modo registro ou login
+  const [isRegistering, setIsRegistering] = useState(false);
 
-useEffect(() => {
-  const unsubscribe = auth.onAuthStateChanged((usr) => {
-    setUser(usr);
-    if (usr) {
-      setViewingUid(usr.uid); // sempre define, mestre ou não
-    } else {
-      setViewingUid(null);
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((usr) => {
+      setUser(usr);
+      if (usr) {
+        setViewingUid(usr.uid);
+      } else {
+        setViewingUid(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const fetchFicha = async (uidAlvo) => {
+    if (user && uidAlvo) {
+      const fichaSalva = await carregarFicha(uidAlvo, user.uid);
+      if (fichaSalva) {
+        if (uidAlvo === user.uid || !isMestre) {
+          setPersonagem(fichaSalva);
+          setCharacterName(fichaSalva.nome || "Sobrevivente");
+        } else {
+          setFichasMestre(prev => ({ ...prev, [uidAlvo]: fichaSalva }));
+        }
+      }
     }
-  });
-  return () => unsubscribe();
-}, []);
+  };
 
- // fora do useEffect
-const fetchFicha = async (uidAlvo) => {
-  if (user && uidAlvo) {
-    const fichaSalva = await carregarFicha(uidAlvo, user.uid);
-    if (fichaSalva) {
-      setPersonagem(fichaSalva);
-      setCharacterName(fichaSalva.nome || "Sobrevivente");
-    } else {
-      setPersonagem(personagemPadrao);
-      setCharacterName("Sobrevivente");
+  useEffect(() => {
+    if (user && viewingUid && !isMestre) {
+      fetchFicha(viewingUid);
     }
-  }
-};
-// ainda mantenha o carregamento automático ao logar
-useEffect(() => {
-  if (user && viewingUid) {
-    fetchFicha(viewingUid);
-  }
-}, [user, viewingUid]);
+  }, [user, viewingUid]);
 
-  // Função para salvar ficha manualmente
   const handleSalvar = async () => {
     if (!user || !personagem || !viewingUid) return;
-
-    // Só salva se for dono da ficha ou mestre
     if (user.uid !== viewingUid && user.uid !== UID_MESTRE) {
       alert("Você não tem permissão para salvar essa ficha.");
       return;
@@ -83,77 +83,44 @@ useEffect(() => {
     }
   };
 
-  // Funções de login:
-  const loginGoogle = () => {
-    signInWithPopup(auth, provider)
-      .catch(err => alert('Erro no login Google: ' + err.message));
+  const carregarVariasFichas = async () => {
+    const uids = uidsParaVisualizar
+      .split(',')
+      .map(u => u.trim())
+      .filter(u => u.length > 0);
+
+    const novasFichas = {};
+    for (const uid of uids) {
+      const ficha = await carregarFicha(uid, user.uid);
+      if (ficha) {
+        novasFichas[uid] = ficha;
+      }
+    }
+    setFichasMestre(novasFichas);
   };
 
-  const loginEmailSenha = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .catch(err => alert('Erro no login com email/senha: ' + err.message));
-  };
-
-  const registrarEmailSenha = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .catch(err => alert('Erro ao registrar: ' + err.message));
-  };
+  const loginGoogle = () => signInWithPopup(auth, provider).catch(err => alert(err.message));
+  const loginEmailSenha = () => signInWithEmailAndPassword(auth, email, password).catch(err => alert(err.message));
+  const registrarEmailSenha = () => createUserWithEmailAndPassword(auth, email, password).catch(err => alert(err.message));
 
   if (!user) {
     return (
       <div className="p-8 max-w-md mx-auto">
         <h1 className="mb-4 text-xl font-bold">Login</h1>
-
-        <button onClick={loginGoogle} className="bg-blue-600 text-white px-4 py-2 rounded mb-4 w-full">
-          Entrar com Google
-        </button>
-
+        <button onClick={loginGoogle} className="bg-blue-600 text-white px-4 py-2 rounded mb-4 w-full">Entrar com Google</button>
         <div className="mb-4">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            className="border px-3 py-2 mb-2 rounded w-full"
-          />
-          <input
-            type="password"
-            placeholder="Senha"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            className="border px-3 py-2 rounded w-full"
-          />
+          <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className="border px-3 py-2 mb-2 rounded w-full" />
+          <input type="password" placeholder="Senha" value={password} onChange={e => setPassword(e.target.value)} className="border px-3 py-2 rounded w-full" />
         </div>
-
         {isRegistering ? (
           <>
-            <button onClick={registrarEmailSenha} className="bg-green-600 text-white px-4 py-2 rounded w-full mb-2">
-              Registrar
-            </button>
-            <p>
-              Já tem conta?{' '}
-              <button
-                onClick={() => setIsRegistering(false)}
-                className="underline text-blue-600"
-              >
-                Faça login
-              </button>
-            </p>
+            <button onClick={registrarEmailSenha} className="bg-green-600 text-white px-4 py-2 rounded w-full mb-2">Registrar</button>
+            <p>Já tem conta? <button onClick={() => setIsRegistering(false)} className="underline text-blue-600">Faça login</button></p>
           </>
         ) : (
           <>
-            <button onClick={loginEmailSenha} className="bg-gray-700 text-white px-4 py-2 rounded w-full mb-2">
-              Entrar com Email/Senha
-            </button>
-            <p>
-              Não tem conta?{' '}
-              <button
-                onClick={() => setIsRegistering(true)}
-                className="underline text-blue-600"
-              >
-                Registre-se
-              </button>
-            </p>
+            <button onClick={loginEmailSenha} className="bg-gray-700 text-white px-4 py-2 rounded w-full mb-2">Entrar com Email/Senha</button>
+            <p>Não tem conta? <button onClick={() => setIsRegistering(true)} className="underline text-blue-600">Registre-se</button></p>
           </>
         )}
       </div>
@@ -164,78 +131,83 @@ useEffect(() => {
 
   return (
     <div className="flex flex-col gap-8 p-8">
-      <div className="flex flex-row items-center gap-4">
-        <p>Logado como: {user.email} ({user.uid})</p>
-        <button
-          onClick={() => auth.signOut()}
-          className="bg-red-500 text-white px-4 py-1 rounded"
-        >
-          Sair
-        </button>
+      <div className="flex items-center gap-4">
+        <p>Logado como: {user.email}</p>
+        <button onClick={() => auth.signOut()} className="bg-red-500 text-white px-4 py-1 rounded">Sair</button>
       </div>
 
-      {isMestre && (
-        <div>
+      {!isMestre && (
+        <>
           <label>
-            Visualizar ficha do UID:
+            Nome do personagem:
             <input
               type="text"
-              value={viewingUid || ''}
-              onChange={(e) => setViewingUid(e.target.value)}
-              placeholder="Digite o UID do jogador"
+              value={characterName}
+              onChange={(e) => {
+                setCharacterName(e.target.value);
+                setPersonagem(prev => ({ ...prev, nome: e.target.value }));
+              }}
               className="border px-2 py-1 rounded ml-2"
             />
-            <button
-  className="bg-blue-500 text-white px-3 py-1 rounded mt-2"
-  onClick={() => fetchFicha(viewingUid)}
->
-  Buscar Ficha
-</button>
           </label>
-        </div>
+          <button onClick={handleSalvar} disabled={salvando} className={`px-4 py-2 rounded text-white ${salvando ? 'bg-gray-500' : 'bg-green-600 hover:bg-green-700'}`}>
+            {salvando ? "Salvando..." : "Salvar Ficha"}
+          </button>
+          {personagem && personagem.partes ? (
+            <CharacterSheet personagem={personagem} setPersonagem={setPersonagem} />
+          ) : (
+            <p>Ficha não carregada.</p>
+          )}
+        </>
       )}
 
-      {!isMestre && !viewingUid && (
-        <div>
-          <SetViewingUidToUser setViewingUid={setViewingUid} userUid={user.uid} />
+      {isMestre && (
+        <div className="space-y-4">
+          <div>
+            <label className="block font-semibold mb-1">UIDs para visualizar (separados por vírgula):</label>
+            <input
+              type="text"
+              value={uidsParaVisualizar}
+              onChange={(e) => setUidsParaVisualizar(e.target.value)}
+              className="border px-2 py-1 rounded w-full"
+            />
+            <button onClick={carregarVariasFichas} className="mt-2 bg-blue-600 text-white px-4 py-1 rounded">Carregar Fichas</button>
+          </div>
+
+          {Object.entries(fichasMestre).map(([uid, ficha]) => (
+            <div key={uid} className="border rounded p-4 shadow bg-white">
+              <p className="text-sm text-gray-500 mb-2">UID: {uid}</p>
+              <div className="mb-2">
+  <label className="text-sm font-semibold mr-2">Nome:</label>
+  <input
+    type="text"
+    value={ficha.nome || "Sobrevivente"}
+    onChange={(e) => {
+      const novoNome = e.target.value;
+      setFichasMestre(prev => ({
+        ...prev,
+        [uid]: { ...prev[uid], nome: novoNome }
+      }));
+    }}
+    className="border px-2 py-1 rounded"
+  />
+</div>
+<CharacterSheet
+  personagem={ficha}
+  setPersonagem={(novaFicha) =>
+    setFichasMestre(prev => ({
+      ...prev,
+      [uid]: { ...novaFicha }
+    }))
+  }
+/>
+
+            </div>
+          ))}
         </div>
-      )}
-
-      <label>
-        Nome do personagem:
-        <input
-          type="text"
-          value={characterName}
-          onChange={(e) => {
-            setCharacterName(e.target.value);
-            setPersonagem(prev => ({ ...prev, nome: e.target.value }));
-          }}
-          className="border px-2 py-1 rounded ml-2"
-        />
-      </label>
-
-      <button
-        onClick={handleSalvar}
-        disabled={salvando}
-        className={`px-4 py-2 rounded text-white ${salvando ? 'bg-gray-500 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
-      >
-        {salvando ? "Salvando..." : "Salvar Ficha"}
-      </button>
-
-      {personagem && personagem.partes ? (
-        <CharacterSheet personagem={personagem} setPersonagem={setPersonagem} />
-      ) : (
-        <p>Ficha não carregada.</p>
       )}
     </div>
   );
-}
-
-function SetViewingUidToUser({ setViewingUid, userUid }) {
-  useEffect(() => {
-    setViewingUid(userUid);
-  }, [setViewingUid, userUid]);
-  return null;
 }
 
 export default App;
