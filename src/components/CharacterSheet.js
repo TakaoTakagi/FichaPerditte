@@ -13,7 +13,7 @@ const getImageName = (part, current, max) => {
   return `${part}_${level}.png`;
 };
 
-const CharacterSheet = ({ personagem, setPersonagem }) => {
+const CharacterSheet = ({ personagem, setPersonagem, offsetX = 0, offsetY = 0 }) => {
   const [status, setStatus] = useState(personagem?.partes || {});
 
   useEffect(() => {
@@ -104,7 +104,13 @@ const CharacterSheet = ({ personagem, setPersonagem }) => {
       <div
         key={part}
         className="absolute"
-        style={{ top, left, width, position: 'absolute', zIndex: part === 'torso' ? 20 : 10 }}
+        style={{
+          top: `calc(${top} + ${offsetY}px)`,
+          left: `calc(${left} + ${offsetX}px)`,
+          width,
+          position: 'absolute',
+          zIndex: part === 'torso' ? 20 : 10
+        }}
       >
         <div
           className="absolute flex flex-col gap-1 bg-white px-2 py-1 rounded shadow"
@@ -151,7 +157,10 @@ const CharacterSheet = ({ personagem, setPersonagem }) => {
   return (
     <div className="flex flex-col items-center gap-4 p-4">
       <h2 className="text-xl font-bold">{personagem.nome}</h2>
-      <div className="relative w-[262px] h-[616px] bg-transparent">
+      <div
+        className="relative w-[262px] h-[616px] bg-transparent"
+        style={{ transform: `translate(${offsetX}px, ${offsetY}px)` }}
+      >
         {renderPart('head', '9px', '530px', '95px')}
         {renderPart('torso', '95px', '506px', '142px')}
         {renderPart('leftArm', '129px', '472px', '56px')}
