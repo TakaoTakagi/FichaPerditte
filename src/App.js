@@ -166,53 +166,58 @@ function App() {
             <button onClick={carregarVariasFichas} className="mt-2 bg-blue-600 text-white px-4 py-1 rounded">Carregar Fichas</button>
           </div>
 
-          <div className="relative" style={{ minHeight: '2000px' }}>
-            {Object.entries(fichasMestre).map(([uid, ficha], index) => {
-              const offsetX = (index % 3) * 300;
-              const offsetY = Math.floor(index / 3) * 650;
-              return (
-                <div
-                  key={uid}
-                  className="absolute border rounded p-4 shadow bg-white"
-                  style={{ top: `${offsetY}px`, left: `${offsetX}px`, width: '300px' }}
-                >
-                  <p className="text-sm text-gray-500 mb-2">UID: {uid}</p>
-                  <div className="mb-2">
-                    <label className="text-sm font-semibold mr-2">Nome:</label>
-                    <input
-                      type="text"
-                      value={ficha.nome || "Sobrevivente"}
-                      onChange={(e) => {
-                        const novoNome = e.target.value;
-                        setFichasMestre(prev => ({
-                          ...prev,
-                          [uid]: { ...prev[uid], nome: novoNome }
-                        }));
-                      }}
-                      className="border px-2 py-1 rounded"
-                    />
-                  </div>
-                  <CharacterSheet
-                    personagem={ficha}
-                    setPersonagem={(novaFicha) =>
-                      setFichasMestre(prev => ({
-                        ...prev,
-                        [uid]: { ...novaFicha }
-                      }))
-                    }
-                  />
-                  <button
-                    onClick={() =>
-                      salvarFicha(uid, ficha, user.uid).then(() => alert("Ficha salva!")).catch(err => alert(err.message))
-                    }
-                    className="mt-2 bg-green-600 text-white px-4 py-1 rounded"
-                  >
-                    Salvar Ficha
-                  </button>
-                </div>
-              );
-            })}
-          </div>
+         <div className="relative" style={{ minHeight: '2500px' }}>
+  {Object.entries(fichasMestre).map(([uid, ficha], index) => {
+    const offsetX = (index % 3) * 350; // Mais espaçamento lateral
+    const offsetY = Math.floor(index / 3) * 750; // Mais espaçamento vertical
+    return (
+      <div
+        key={uid}
+        className="absolute border rounded p-4 shadow bg-white"
+        style={{ top: `${offsetY}px`, left: `${offsetX}px`, width: '330px' }}
+      >
+        <p className="text-sm text-gray-500 mb-2">UID: {uid}</p>
+        <div className="mb-2">
+          <label className="text-sm font-semibold mr-2">Nome:</label>
+          <input
+            type="text"
+            value={ficha.nome || "Sobrevivente"}
+            onChange={(e) => {
+              const novoNome = e.target.value;
+              setFichasMestre(prev => ({
+                ...prev,
+                [uid]: { ...prev[uid], nome: novoNome }
+              }));
+            }}
+            className="border px-2 py-1 rounded w-full"
+          />
+        </div>
+
+        {/* Nome acima do boneco */}
+        <div className="text-center font-bold text-lg mb-2">{ficha.nome || "Sem Nome"}</div>
+
+        <CharacterSheet
+          personagem={ficha}
+          setPersonagem={(novaFicha) =>
+            setFichasMestre(prev => ({
+              ...prev,
+              [uid]: { ...novaFicha }
+            }))
+          }
+        />
+
+        <button
+          onClick={() =>
+            salvarFicha(uid, ficha, user.uid).then(() => alert("Ficha salva!")).catch(err => alert(err.message))
+          }
+          className="mt-2 bg-green-600 text-white px-4 py-1 rounded w-full"
+        >
+          Salvar Ficha
+        </button>
+      </div>
+    );
+  })}
+</div>
         </div>
       )}
     </div>
