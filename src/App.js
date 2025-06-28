@@ -169,7 +169,7 @@ function App() {
 <div className="relative" style={{ minHeight: '6000px' }}>
   {Object.entries(fichasMestre).map(([uid, ficha], index) => {
     const offsetX = (index % 3) * 360; // espaço horizontal entre fichas
-    const offsetY = Math.floor(index / 3) * 2000; // espaçamento vertical maior
+    const offsetY = Math.floor(index / 3) * 10000; // espaçamento vertical maior
     return (
       <div
         key={uid}
