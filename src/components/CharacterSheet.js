@@ -155,8 +155,8 @@ const CharacterSheet = ({ personagem, setPersonagem, offsetX = 0, offsetY = 0 })
   }
 
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
-      <h2 className="text-xl font-bold">{personagem.nome}</h2>
+  <div className="flex flex-col items-center gap-2 p-2">
+    <div className="text-center font-bold text-lg mb-1">{personagem.nome || "Sem Nome"}</div>
       <div
         className="relative w-[262px] h-[616px] bg-transparent"
         style={{ transform: `translate(${offsetX}px, ${offsetY}px)` }}

@@ -168,8 +168,9 @@ function App() {
 
          <div className="relative" style={{ minHeight: '2500px' }}>
   {Object.entries(fichasMestre).map(([uid, ficha], index) => {
-    const offsetX = (index % 3) * 350; // Mais espaçamento lateral
-    const offsetY = Math.floor(index / 3) * 750; // Mais espaçamento vertical
+    const offsetX = (index % 3) * 370;  // mais espaçamento lateral
+const offsetY = Math.floor(index / 3) * 950; // espaçamento vertical maior
+
     return (
       <div
         key={uid}
@@ -218,6 +219,7 @@ function App() {
     );
   })}
 </div>
+
         </div>
       )}
     </div>
