@@ -166,32 +166,34 @@ function App() {
             <button onClick={carregarVariasFichas} className="mt-2 bg-blue-600 text-white px-4 py-1 rounded">Carregar Fichas</button>
           </div>
 
-<div className="relative" style={{ minHeight: '5000px' }}>
+<div className="relative" style={{ minHeight: '6000px' }}>
   {Object.entries(fichasMestre).map(([uid, ficha], index) => {
-    const offsetX = (index % 3) * 320; // espaço horizontal maior entre fichas
-    const offsetY = Math.floor(index / 3) * 1350; // espaço vertical aumentado
+    const offsetX = (index % 3) * 360; // espaço horizontal entre fichas
+    const offsetY = Math.floor(index / 3) * 2000; // espaçamento vertical maior
     return (
       <div
         key={uid}
         className="absolute border rounded p-4 shadow bg-white"
-        style={{ top: `${offsetY}px`, left: `${offsetX}px`, width: '300px' }}
+        style={{ top: `${offsetY}px`, left: `${offsetX}px`, width: '320px' }}
       >
-        <div className="mb-2 text-xs text-gray-500">UID: {uid}</div>
-        <div className="mb-2">
-          <label className="text-sm font-semibold mr-2">Nome:</label>
-          <input
-            type="text"
-            value={ficha.nome || "Sobrevivente"}
-            onChange={(e) => {
-              const novoNome = e.target.value;
-              setFichasMestre(prev => ({
-                ...prev,
-                [uid]: { ...prev[uid], nome: novoNome }
-              }));
-            }}
-            className="border px-2 py-1 rounded w-full"
-          />
-        </div>
+        <div className="mb-1 text-xs text-gray-500">UID: {uid}</div>
+
+        <label className="block text-sm font-semibold mb-1">Nome do personagem:</label>
+        <input
+          type="text"
+          value={ficha.nome || "Sobrevivente"}
+          onChange={(e) => {
+            const novoNome = e.target.value;
+            setFichasMestre(prev => ({
+              ...prev,
+              [uid]: { ...prev[uid], nome: novoNome }
+            }));
+          }}
+          className="border px-2 py-1 rounded w-full mb-4"
+        />
+
+        <div className="mb-4 text-center font-bold text-lg">{ficha.nome || "Sobrevivente"}</div>
+
         <CharacterSheet
           personagem={ficha}
           setPersonagem={(novaFicha) =>
@@ -201,6 +203,7 @@ function App() {
             }))
           }
         />
+
         <button
           onClick={() =>
             salvarFicha(uid, ficha, user.uid).then(() => alert("Ficha salva!")).catch(err => alert(err.message))
@@ -213,6 +216,7 @@ function App() {
     );
   })}
 </div>
+
 
         </div>
       )}
