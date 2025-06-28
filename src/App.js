@@ -1,4 +1,22 @@
-// ... [importações e constantes inalteradas] ...
+import { auth, provider } from './firebase';
+import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { useState, useEffect } from "react";
+import { salvarFicha, carregarFicha } from './firebaseService';
+import CharacterSheet from "./components/CharacterSheet";
+
+const UID_MESTRE = "qE5LJAbFhMabgBuoYNx9w9pSwv52";
+
+const personagemPadrao = {
+  nome: "Sobrevivente",
+  partes: {
+    head: { current: 4, max: 4 },
+    torso: { current: 8, max: 8 },
+    leftArm: { current: 5, max: 5 },
+    rightArm: { current: 5, max: 5 },
+    leftLeg: { current: 6, max: 6 },
+    rightLeg: { current: 6, max: 6 }
+  }
+};
 
 function App() {
   const [user, setUser] = useState(null);

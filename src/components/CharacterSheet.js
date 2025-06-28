@@ -20,7 +20,6 @@ const CharacterSheet = ({ personagem, setPersonagem }) => {
     setStatus(personagem?.partes || {});
   }, [personagem]);
 
-  // Altera current (vida atual), garantindo que não ultrapasse max ou seja menor que 0
   const changeHealth = (part, delta) => {
     setStatus(prev => {
       if (!prev[part]) return prev;
@@ -35,18 +34,15 @@ const CharacterSheet = ({ personagem, setPersonagem }) => {
     });
   };
 
-  // Altera max (vida máxima), ajustando current caso necessário
   const changeMaxHealth = (part, newMax) => {
     setStatus(prev => {
       if (!prev[part]) return prev;
 
       let maxNumber = parseInt(newMax, 10);
-      if (isNaN(maxNumber) || maxNumber < 1) maxNumber = 1; // mínimo 1
+      if (isNaN(maxNumber) || maxNumber < 1) maxNumber = 1;
 
       const nova = { ...prev[part] };
       nova.max = maxNumber;
-
-      // Ajusta current para não ultrapassar max
       if (nova.current > maxNumber) nova.current = maxNumber;
 
       const novoStatus = { ...prev, [part]: nova };
@@ -63,8 +59,7 @@ const CharacterSheet = ({ personagem, setPersonagem }) => {
       let currentNumber = parseInt(newCurrent, 10);
       if (isNaN(currentNumber)) currentNumber = 0;
 
-      if (currentNumber < 0) currentNumber = 0;
-      if (currentNumber > prev[part].max) currentNumber = prev[part].max;
+      currentNumber = Math.max(0, Math.min(currentNumber, prev[part].max));
 
       const nova = { ...prev[part], current: currentNumber };
       const novoStatus = { ...prev, [part]: nova };
@@ -113,33 +108,31 @@ const CharacterSheet = ({ personagem, setPersonagem }) => {
       >
         <div
           className="absolute flex flex-col gap-1 bg-white px-2 py-1 rounded shadow"
-          style={{ position: 'absolute', ...controlStyle, zIndex: 30, width: '110px' }}
+          style={{ ...controlStyle, zIndex: 30, width: '110px' }}
         >
           <div className="flex items-center justify-between">
             <button onClick={() => changeHealth(part, -1)} className="text-red-500 font-bold px-2 rounded hover:bg-red-100">-</button>
-           <input
-  type="number"
-  value={current}
-  onChange={(e) => changeCurrentHealth(part, e.target.value)}
-  style={{ width: '20px' }}
-  className="text-center border rounded"
-  min={0}
-  max={max}
-/>
-
+            <input
+              type="number"
+              value={current}
+              onChange={(e) => changeCurrentHealth(part, e.target.value)}
+              style={{ width: '20px' }}
+              className="text-center border rounded"
+              min={0}
+              max={max}
+            />
             <button onClick={() => changeHealth(part, 1)} className="text-green-500 font-bold px-2 rounded hover:bg-green-100">+</button>
           </div>
           <div className="flex items-center justify-between">
             <label className="text-xs mr-2">Max:</label>
-         <input
-         type="number"
-          value={max}
-           onChange={(e) => changeMaxHealth(part, e.target.value)}
-           style= {{ width: '20px' }}     // largura customizada menor
-          className="text-center border rounded"
-           min={1}
-/>
-
+            <input
+              type="number"
+              value={max}
+              onChange={(e) => changeMaxHealth(part, e.target.value)}
+              style={{ width: '20px' }}
+              className="text-center border rounded"
+              min={1}
+            />
           </div>
         </div>
         <img
@@ -158,7 +151,7 @@ const CharacterSheet = ({ personagem, setPersonagem }) => {
   return (
     <div className="flex flex-col items-center gap-4 p-4">
       <h2 className="text-xl font-bold">{personagem.nome}</h2>
-      <div className="relative w-[262px] h-[616px] bg-transparent mx-auto">
+      <div className="relative w-[262px] h-[616px] bg-transparent">
         {renderPart('head', '9px', '530px', '95px')}
         {renderPart('torso', '95px', '506px', '142px')}
         {renderPart('leftArm', '129px', '472px', '56px')}
