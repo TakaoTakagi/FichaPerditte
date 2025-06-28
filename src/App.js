@@ -169,7 +169,7 @@ function App() {
          <div className="relative" style={{ minHeight: '2500px' }}>
   {Object.entries(fichasMestre).map(([uid, ficha], index) => {
     const offsetX = (index % 3) * 370;  // mais espaçamento lateral
-const offsetY = Math.floor(index / 3) * 950; // espaçamento vertical maior
+    const offsetY = Math.floor(index / 3) * 1200;
 
     return (
       <div
@@ -177,22 +177,7 @@ const offsetY = Math.floor(index / 3) * 950; // espaçamento vertical maior
         className="absolute border rounded p-4 shadow bg-white"
         style={{ top: `${offsetY}px`, left: `${offsetX}px`, width: '330px' }}
       >
-        <p className="text-sm text-gray-500 mb-2">UID: {uid}</p>
-        <div className="mb-2">
-          <label className="text-sm font-semibold mr-2">Nome:</label>
-          <input
-            type="text"
-            value={ficha.nome || "Sobrevivente"}
-            onChange={(e) => {
-              const novoNome = e.target.value;
-              setFichasMestre(prev => ({
-                ...prev,
-                [uid]: { ...prev[uid], nome: novoNome }
-              }));
-            }}
-            className="border px-2 py-1 rounded w-full"
-          />
-        </div>
+        <div className="mb-2 text-xs text-gray-500">UID: {uid}</div>
 
         {/* Nome acima do boneco */}
         <div className="text-center font-bold text-lg mb-2">{ficha.nome || "Sem Nome"}</div>
