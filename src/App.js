@@ -176,44 +176,47 @@ function App() {
           </div>
 
           <div className="flex flex-wrap gap-4">
-            {Object.entries(fichasMestre).map(([uid, ficha]) => (
-              <div key={uid} className="border rounded p-4 shadow bg-white w-full md:w-[45%]">
-                <p className="text-sm text-gray-500 mb-2">UID: {uid}</p>
-
-                <div className="mb-2">
-                  <label className="text-sm font-semibold mr-2">Nome:</label>
-                  <input
-                    type="text"
-                    value={ficha.nome || "Sobrevivente"}
-                    onChange={(e) => {
-                      const novoNome = e.target.value;
-                      setFichasMestre(prev => ({
-                        ...prev,
-                        [uid]: { ...prev[uid], nome: novoNome }
-                      }));
-                    }}
-                    className="border px-2 py-1 rounded"
-                  />
-                </div>
-
-                <button
-                  onClick={() => handleSalvarIndividual(uid, ficha)}
-                  className="mb-4 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded"
-                >
-                  Salvar Ficha
-                </button>
-
-                <CharacterSheet
-                  personagem={ficha}
-                  setPersonagem={(novaFicha) =>
-                    setFichasMestre(prev => ({
-                      ...prev,
-                      [uid]: { ...novaFicha }
-                    }))
-                  }
-                />
-              </div>
-            ))}
+            {Object.entries(fichasMestre).map(([uid, ficha], index) => (
+  <div
+    key={uid}
+    className="border rounded p-4 shadow bg-white"
+    style={{ marginTop: `${index * 80}px` }} // espaçamento vertical progressivo
+  >
+    <p className="text-sm text-gray-500 mb-2">UID: {uid}</p>
+    <div className="mb-2">
+      <label className="text-sm font-semibold mr-2">Nome:</label>
+      <input
+        type="text"
+        value={ficha.nome || "Sobrevivente"}
+        onChange={(e) => {
+          const novoNome = e.target.value;
+          setFichasMestre(prev => ({
+            ...prev,
+            [uid]: { ...prev[uid], nome: novoNome }
+          }));
+        }}
+        className="border px-2 py-1 rounded"
+      />
+    </div>
+    <CharacterSheet
+      personagem={ficha}
+      setPersonagem={(novaFicha) =>
+        setFichasMestre(prev => ({
+          ...prev,
+          [uid]: { ...novaFicha }
+        }))
+      }
+    />
+    <button
+      onClick={() =>
+        salvarFicha(uid, ficha, user.uid).then(() => alert("Ficha salva!")).catch(err => alert(err.message))
+      }
+      className="mt-2 bg-green-600 text-white px-4 py-1 rounded"
+    >
+      Salvar Ficha
+    </button>
+  </div>
+))}
           </div>
         </div>
       )}
