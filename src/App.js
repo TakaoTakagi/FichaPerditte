@@ -166,10 +166,10 @@ function App() {
             <button onClick={carregarVariasFichas} className="mt-2 bg-blue-600 text-white px-4 py-1 rounded">Carregar Fichas</button>
           </div>
 
-<div className="relative" style={{ minHeight: `${Math.ceil(Object.keys(fichasMestre).length / 3) * 900}px` }}>
+<div className="relative" style={{ minHeight: `${Math.ceil(Object.keys(fichasMestre).length / 3) * 1000}px` }}>
   {Object.entries(fichasMestre).map(([uid, ficha], index) => {
-    const offsetX = (index % 3) * 380; // Mais espaçado lateralmente
-    const offsetY = Math.floor(index / 3) * 850; // Mais espaçado verticalmente
+    const offsetX = (index % 3) * 400; // Espaço lateral maior
+    const offsetY = Math.floor(index / 3) * 950; // Altura generosa entre os bonecos
 
     return (
       <div
@@ -179,7 +179,7 @@ function App() {
       >
         <p className="text-sm text-gray-500 mb-1">UID: {uid}</p>
 
-        <label className="text-sm font-semibold mb-1 block">Nome do personagem:</label>
+        <label className="text-sm font-semibold block">Nome do personagem:</label>
         <input
           type="text"
           value={ficha.nome || "Sobrevivente"}
@@ -190,11 +190,13 @@ function App() {
               [uid]: { ...prev[uid], nome: novoNome }
             }));
           }}
-          className="border px-2 py-1 rounded w-full mb-2"
+          className="border px-2 py-1 rounded w-full mb-4"
         />
 
-        {/* Nome centralizado acima do boneco */}
-        <p className="text-center text-xl font-bold mb-4">{ficha.nome || "Sobrevivente"}</p>
+        {/* Nome do personagem centralizado acima do boneco */}
+        <div className="w-full text-center text-xl font-bold mb-6">
+          {ficha.nome || "Sobrevivente"}
+        </div>
 
         <CharacterSheet
           personagem={ficha}
