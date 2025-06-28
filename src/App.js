@@ -169,7 +169,7 @@ function App() {
 <div className="relative" style={{ minHeight: `${Math.ceil(Object.keys(fichasMestre).length / 3) * 1000}px` }}>
   {Object.entries(fichasMestre).map(([uid, ficha], index) => {
     const offsetX = (index % 3) * 400; // Espaço lateral maior
-    const offsetY = index * 750; // Altura generosa entre os bonecos
+    const offsetY = index * 2000; // Altura generosa entre os bonecos
 
     return (
       <div
