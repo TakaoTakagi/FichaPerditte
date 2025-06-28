@@ -155,12 +155,14 @@ const CharacterSheet = ({ personagem, setPersonagem, offsetX = 0, offsetY = 0 })
   }
 
   return (
-  <div className="flex flex-col items-center gap-2 p-2">
-    <div className="text-center font-bold text-lg mb-1">{personagem.nome || "Sem Nome"}</div>
-      <div
-        className="relative w-[262px] h-[616px] bg-transparent"
-        style={{ transform: `translate(${offsetX}px, ${offsetY}px)` }}
-      >
+    <div
+      className="absolute"
+      style={{ transform: `translate(${offsetX}px, ${offsetY}px)` }}
+    >
+      <div className="text-center font-bold text-lg mb-2">
+        {personagem.nome || "Sem Nome"}
+      </div>
+      <div className="relative w-[262px] h-[616px] bg-transparent">
         {renderPart('head', '9px', '530px', '95px')}
         {renderPart('torso', '95px', '506px', '142px')}
         {renderPart('leftArm', '129px', '472px', '56px')}
