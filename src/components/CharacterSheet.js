@@ -162,7 +162,14 @@ const CharacterSheet = ({ personagem, setPersonagem, offsetX = 0, offsetY = 0 })
       <div className="text-center font-bold text-lg mb-2">
         {personagem.nome || "Sem Nome"}
       </div>
-      <div className="relative w-[262px] h-[616px] bg-transparent">
+      <div
+  className="relative bg-transparent"
+  style={{
+    width: '262px',
+    minHeight: 'auto', // ou até pode remover se não quiser nenhuma altura fixa
+    transform: `translate(${offsetX}px, ${offsetY}px)`
+  }}
+>
         {renderPart('head', '9px', '530px', '95px')}
         {renderPart('torso', '95px', '506px', '142px')}
         {renderPart('leftArm', '129px', '472px', '56px')}
