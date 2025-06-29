@@ -147,12 +147,12 @@ const CharacterSheet = ({ personagem, setPersonagem, offsetX = 0, offsetY = 0 })
         className="relative w-[262px] h-[616px] bg-transparent"
         style={{ transform: `translate(${offsetX}px, ${offsetY}px)` }}
       >
-        {renderPart('head', '9px', '530px', '95px')}
-        {renderPart('torso', '95px', '506px', '142px')}
-        {renderPart('leftArm', '129px', '472px', '56px')}
-        {renderPart('rightArm', '129px', '626px', '56px')}
-        {renderPart('leftLeg', '284px', '508px', '70px')}
-        {renderPart('rightLeg', '284px', '576px', '70px')}
+{renderPart('head', '9px', '85px', '95px')}
+{renderPart('torso', '95px', '60px', '142px')}
+{renderPart('leftArm', '129px', '26px', '56px')}
+{renderPart('rightArm', '129px', '180px', '56px')}
+{renderPart('leftLeg', '284px', '62px', '70px')}
+{renderPart('rightLeg', '284px', '130px', '70px')}
       </div>
     </div>
   );
