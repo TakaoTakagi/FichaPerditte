@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 
 const getImageName = (part, current, max) => {
   const percentage = current / max;
-
   let level;
   if (percentage === 1) level = 100;
   else if (percentage >= 0.75) level = 75;
   else if (percentage >= 0.45) level = 50;
   else if (percentage >= 0.1) level = 25;
   else level = 0;
-
   return `${part}_${level}.png`;
 };
 
@@ -23,13 +21,10 @@ const CharacterSheet = ({ personagem, setPersonagem, offsetX = 0, offsetY = 0 })
   const changeHealth = (part, delta) => {
     setStatus(prev => {
       if (!prev[part]) return prev;
-
       const nova = { ...prev[part] };
       nova.current = Math.max(0, Math.min(nova.max, nova.current + delta));
-
       const novoStatus = { ...prev, [part]: nova };
       setPersonagem(old => ({ ...old, partes: novoStatus }));
-
       return novoStatus;
     });
   };
@@ -37,17 +32,13 @@ const CharacterSheet = ({ personagem, setPersonagem, offsetX = 0, offsetY = 0 })
   const changeMaxHealth = (part, newMax) => {
     setStatus(prev => {
       if (!prev[part]) return prev;
-
       let maxNumber = parseInt(newMax, 10);
       if (isNaN(maxNumber) || maxNumber < 1) maxNumber = 1;
-
       const nova = { ...prev[part] };
       nova.max = maxNumber;
       if (nova.current > maxNumber) nova.current = maxNumber;
-
       const novoStatus = { ...prev, [part]: nova };
       setPersonagem(old => ({ ...old, partes: novoStatus }));
-
       return novoStatus;
     });
   };
@@ -55,16 +46,12 @@ const CharacterSheet = ({ personagem, setPersonagem, offsetX = 0, offsetY = 0 })
   const changeCurrentHealth = (part, newCurrent) => {
     setStatus(prev => {
       if (!prev[part]) return prev;
-
       let currentNumber = parseInt(newCurrent, 10);
       if (isNaN(currentNumber)) currentNumber = 0;
-
       currentNumber = Math.max(0, Math.min(currentNumber, prev[part].max));
-
       const nova = { ...prev[part], current: currentNumber };
       const novoStatus = { ...prev, [part]: nova };
       setPersonagem(old => ({ ...old, partes: novoStatus }));
-
       return novoStatus;
     });
   };
@@ -76,7 +63,6 @@ const CharacterSheet = ({ personagem, setPersonagem, offsetX = 0, offsetY = 0 })
     const imageName = getImageName(part, current, max);
 
     let controlStyle = {};
-
     switch (part) {
       case 'head':
         controlStyle = { top: '10px', left: 'calc(100% + 5px)' };
@@ -155,14 +141,12 @@ const CharacterSheet = ({ personagem, setPersonagem, offsetX = 0, offsetY = 0 })
   }
 
   return (
-    <div
-      className="absolute"
-      style={{ transform: `translate(${offsetX}px, ${offsetY}px)` }}
-    >
-      <div className="text-center font-bold text-lg mb-2">
-        {personagem.nome || "Sem Nome"}
-      </div>
-      <div className="relative w-[262px] h-[616px] bg-transparent">
+    <div className="flex flex-col items-center px-4">
+      <div className="text-center font-bold text-lg mb-1">{personagem.nome || "Sem Nome"}</div>
+      <div
+        className="relative w-[262px] h-[616px] bg-transparent"
+        style={{ transform: `translate(${offsetX}px, ${offsetY}px)` }}
+      >
         {renderPart('head', '9px', '530px', '95px')}
         {renderPart('torso', '95px', '506px', '142px')}
         {renderPart('leftArm', '129px', '472px', '56px')}

@@ -3,6 +3,7 @@ import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPass
 import { useState, useEffect } from "react";
 import { salvarFicha, carregarFicha } from './firebaseService';
 import CharacterSheet from "./components/CharacterSheet";
+import VisualizadorDeFichas from "./components/VisualizadorDeFichas"; // NOVO COMPONENTE
 
 const UID_MESTRE = "qE5LJAbFhMabgBuoYNx9w9pSwv52";
 
@@ -166,61 +167,13 @@ function App() {
             <button onClick={carregarVariasFichas} className="mt-2 bg-blue-600 text-white px-4 py-1 rounded">Carregar Fichas</button>
           </div>
 
-<div className="relative" style={{ minHeight: `${Math.ceil(Object.keys(fichasMestre).length / 3) * 1000}px` }}>
-  {Object.entries(fichasMestre).map(([uid, ficha], index) => {
-    const offsetX = (index % 3) * 400; // Espaço lateral maior
-    const offsetY = index * 2000; // Altura generosa entre os bonecos
-
-    return (
-      <div
-        key={uid}
-        className="absolute border rounded p-4 shadow bg-white"
-        style={{ top: `${offsetY}px`, left: `${offsetX}px`, width: '360px' }}
-      >
-        <p className="text-sm text-gray-500 mb-1">UID: {uid}</p>
-
-        <label className="text-sm font-semibold block">Nome do personagem:</label>
-        <input
-          type="text"
-          value={ficha.nome || "Sobrevivente"}
-          onChange={(e) => {
-            const novoNome = e.target.value;
-            setFichasMestre(prev => ({
-              ...prev,
-              [uid]: { ...prev[uid], nome: novoNome }
-            }));
-          }}
-          className="border px-2 py-1 rounded w-full mb-4"
-        />
-
-        {/* Nome do personagem centralizado acima do boneco */}
-        <div className="w-full text-center text-xl font-bold mb-6">
-          {ficha.nome || "Sobrevivente"}
-        </div>
-
-        <CharacterSheet
-          personagem={ficha}
-          setPersonagem={(novaFicha) =>
-            setFichasMestre(prev => ({
-              ...prev,
-              [uid]: { ...novaFicha }
-            }))
-          }
-        />
-
-        <button
-          onClick={() =>
-            salvarFicha(uid, ficha, user.uid).then(() => alert("Ficha salva!")).catch(err => alert(err.message))
-          }
-          className="mt-4 bg-green-600 text-white px-4 py-2 rounded w-full"
-        >
-          Salvar Ficha
-        </button>
-      </div>
-    );
-  })}
-</div>
-
+          {/* FICHAS VISUALIZADAS PELO MESTRE */}
+          <VisualizadorDeFichas
+            fichas={fichasMestre}
+            setFichasMestre={setFichasMestre}
+            salvarFicha={salvarFicha}
+            user={user}
+          />
         </div>
       )}
     </div>
