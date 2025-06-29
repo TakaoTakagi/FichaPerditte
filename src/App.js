@@ -154,7 +154,7 @@ function App() {
       )}
 
       {isMestre && (
-        <div className="space-y-4">
+       <div className="space-x-8">
           <div>
             <label className="block font-semibold mb-1">UIDs para visualizar (separados por vírgula):</label>
             <input
