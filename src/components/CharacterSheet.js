@@ -13,7 +13,7 @@ const getImageName = (part, current, max) => {
   return `${part}_${level}.png`;
 };
 
-const CharacterSheet = ({ personagem, setPersonagem, offsetX = 0, offsetY = 0 }) => {
+const CharacterSheet = ({ personagem, setPersonagem }) => {
   const [status, setStatus] = useState(personagem?.partes || {});
 
   useEffect(() => {
@@ -105,8 +105,8 @@ const CharacterSheet = ({ personagem, setPersonagem, offsetX = 0, offsetY = 0 })
         key={part}
         className="absolute"
         style={{
-          top: `calc(${top} + ${offsetY}px)`,
-          left: `calc(${left} + ${offsetX}px)`,
+          top,
+          left,
           width,
           position: 'absolute',
           zIndex: part === 'torso' ? 20 : 10
@@ -155,21 +155,9 @@ const CharacterSheet = ({ personagem, setPersonagem, offsetX = 0, offsetY = 0 })
   }
 
   return (
-    <div
-      className="absolute"
-      style={{ transform: `translate(${offsetX}px, ${offsetY}px)` }}
-    >
-      <div className="text-center font-bold text-lg mb-2">
-        {personagem.nome || "Sem Nome"}
-      </div>
-      <div
-  className="relative bg-transparent"
-  style={{
-    width: '262px',
-    minHeight: 'auto', // ou até pode remover se não quiser nenhuma altura fixa
-    transform: `translate(${offsetX}px, ${offsetY}px)`
-  }}
->
+    <div className="flex flex-col items-center px-4">
+      <div className="text-center font-bold text-lg mb-1">{personagem.nome || "Sem Nome"}</div>
+      <div className="relative w-[262px] h-[616px] bg-transparent">
         {renderPart('head', '9px', '530px', '95px')}
         {renderPart('torso', '95px', '506px', '142px')}
         {renderPart('leftArm', '129px', '472px', '56px')}

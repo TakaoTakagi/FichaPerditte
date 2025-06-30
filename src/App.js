@@ -154,7 +154,7 @@ function App() {
       )}
 
       {isMestre && (
-        <div className="">
+        <div className="flex flex-col gap-8">
           <div>
             <label className="block font-semibold mb-1">UIDs para visualizar (separados por vírgula):</label>
             <input
@@ -166,59 +166,53 @@ function App() {
             <button onClick={carregarVariasFichas} className="mt-2 bg-blue-600 text-white px-4 py-1 rounded">Carregar Fichas</button>
           </div>
 
-          {/* VISUALIZAÇÃO COM POSICIONAMENTO ABSOLUTO */}
-          <div className="relative" style={{ minHeight: `${Math.ceil(Object.keys(fichasMestre).length / 3) * 1000}px` }}>
-            {Object.entries(fichasMestre).map(([uid, ficha], index) => {
-              const offsetX = (index % 3) * 400;
-              const offsetY = Math.floor(index / 3) * 1000;
+          {/* Visualização vertical simples */}
+          <div className="flex flex-col gap-8">
+            {Object.entries(fichasMestre).map(([uid, ficha]) => (
+              <div
+                key={uid}
+                className="border rounded p-4 shadow bg-white"
+              >
+                <p className="text-sm text-gray-500 mb-1">UID: {uid}</p>
 
-              return (
-                <div
-                  key={uid}
-                  className="absolute border rounded p-4 shadow bg-white"
-                  style={{ top: `${offsetY}px`, left: `${offsetX}px`, width: '360px' }}
-                >
-                  <p className="text-sm text-gray-500 mb-1">UID: {uid}</p>
+                <label className="text-sm font-semibold block">Nome do personagem:</label>
+                <input
+                  type="text"
+                  value={ficha.nome || "Sobrevivente"}
+                  onChange={(e) => {
+                    const novoNome = e.target.value;
+                    setFichasMestre(prev => ({
+                      ...prev,
+                      [uid]: { ...prev[uid], nome: novoNome }
+                    }));
+                  }}
+                  className="border px-2 py-1 rounded w-full mb-4"
+                />
 
-                  <label className="text-sm font-semibold block">Nome do personagem:</label>
-                  <input
-                    type="text"
-                    value={ficha.nome || "Sobrevivente"}
-                    onChange={(e) => {
-                      const novoNome = e.target.value;
-                      setFichasMestre(prev => ({
-                        ...prev,
-                        [uid]: { ...prev[uid], nome: novoNome }
-                      }));
-                    }}
-                    className="border px-2 py-1 rounded w-full mb-4"
-                  />
-
-                  <div className="w-full text-center text-xl font-bold mb-6">
-                    {ficha.nome || "Sobrevivente"}
-                  </div>
-
-                  <CharacterSheet
-                    personagem={ficha}
-                    setPersonagem={(novaFicha) =>
-                      setFichasMestre(prev => ({
-                        ...prev,
-                        [uid]: { ...novaFicha }
-                      }))
-                    }
-                  />
-
-                  <button
-                    onClick={() =>
-                      salvarFicha(uid, ficha, user.uid).then(() => alert("Ficha salva!")).catch(err => alert(err.message))
-                    }
-                    className="mt-4 bg-green-600 text-white px-4 py-2 rounded w-full"
-                  >
-                    Salvar Ficha
-                  </button>
+                <div className="w-full text-center text-xl font-bold mb-6">
+                  {ficha.nome || "Sobrevivente"}
                 </div>
-              );
-            })}
+
+                <CharacterSheet
+                  personagem={ficha}
+                  setPersonagem={(novaFicha) =>
+                    setFichasMestre(prev => ({
+                      ...prev,
+                      [uid]: { ...novaFicha }
+                    }))
+                  }
+                />
+
+                <button
+                  onClick={() =>
+                    salvarFicha(uid, ficha, user.uid).then(() => alert("Ficha salva!")).catch(err => alert(err.message))
+                  }
+                  className="mt-4 bg-green-600 text-white px-4 py-2 rounded w-full"
+                >
+                  Salvar Ficha
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       )}
