@@ -1,7 +1,7 @@
 import { auth, provider } from './firebase';
 import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { useState, useEffect } from "react";
-import { salvarFicha, carregarFicha } from './firebaseService';
+import { salvarFicha, carregarFicha, carregarTodasFichas } from './firebaseService';
 import CharacterSheet from "./components/CharacterSheet";
 
 const UID_MESTRE = "qE5LJAbFhMabgBuoYNx9w9pSwv52";
