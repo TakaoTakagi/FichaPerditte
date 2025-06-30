@@ -18,6 +18,14 @@ const personagemPadrao = {
   }
 };
 
+// Função auxiliar para gerar posição baseada na UID
+const getOffsetForUID = (uid) => {
+  const base = uid.charCodeAt(0) + uid.charCodeAt(1) + uid.charCodeAt(2);
+  const offsetX = (base % 5) * 420;
+  const offsetY = (base % 4) * 1000;
+  return { offsetX, offsetY };
+};
+
 function App() {
   const [user, setUser] = useState(null);
   const [viewingUid, setViewingUid] = useState(null);
@@ -25,29 +33,28 @@ function App() {
   const [characterName, setCharacterName] = useState("Sobrevivente");
   const [salvando, setSalvando] = useState(false);
 
-  const [uidsParaVisualizar, setUidsParaVisualizar] = useState('');
   const [fichasMestre, setFichasMestre] = useState({});
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
 
-useEffect(() => {
-  const unsubscribe = auth.onAuthStateChanged(async (usr) => {
-    setUser(usr);
-    if (usr) {
-      setViewingUid(usr.uid);
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (usr) => {
+      setUser(usr);
+      if (usr) {
+        setViewingUid(usr.uid);
 
-      if (usr.uid === UID_MESTRE) {
-        const todasAsFichas = await carregarTodasFichas();
-        setFichasMestre(todasAsFichas);
+        if (usr.uid === UID_MESTRE) {
+          const todasAsFichas = await carregarTodasFichas();
+          setFichasMestre(todasAsFichas);
+        }
+      } else {
+        setViewingUid(null);
       }
-    } else {
-      setViewingUid(null);
-    }
-  });
-  return () => unsubscribe();
-}, []);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const fetchFicha = async (uidAlvo) => {
     if (user && uidAlvo) {
@@ -85,18 +92,6 @@ useEffect(() => {
     } finally {
       setSalvando(false);
     }
-  };
-
-  const carregarVariasFichas = async () => {
-    const uids = uidsParaVisualizar.split(',').map(u => u.trim()).filter(Boolean);
-    const novasFichas = {};
-    for (const uid of uids) {
-      const ficha = await carregarFicha(uid, user.uid);
-      if (ficha) {
-        novasFichas[uid] = ficha;
-      }
-    }
-    setFichasMestre(novasFichas);
   };
 
   const loginGoogle = () => signInWithPopup(auth, provider).catch(err => alert(err.message));
@@ -162,24 +157,15 @@ useEffect(() => {
       )}
 
       {isMestre && (
-        <div className="flex flex-col gap-8">
-          <div>
-            <label className="block font-semibold mb-1">UIDs para visualizar (separados por vírgula):</label>
-            <input
-              type="text"
-              value={uidsParaVisualizar}
-              onChange={(e) => setUidsParaVisualizar(e.target.value)}
-              className="border px-2 py-1 rounded w-full"
-            />
-            <button onClick={carregarVariasFichas} className="mt-2 bg-blue-600 text-white px-4 py-1 rounded">Carregar Fichas</button>
-          </div>
+        <div className="relative" style={{ minHeight: "3200px" }}>
+          {Object.entries(fichasMestre).map(([uid, ficha]) => {
+            const { offsetX, offsetY } = getOffsetForUID(uid);
 
-          {/* Visualização vertical simples */}
-          <div className="flex flex-col gap-8">
-            {Object.entries(fichasMestre).map(([uid, ficha]) => (
+            return (
               <div
                 key={uid}
-                className="border rounded p-4 shadow bg-white"
+                className="absolute border rounded p-4 shadow bg-white"
+                style={{ top: `${offsetY}px`, left: `${offsetX}px`, width: '360px' }}
               >
                 <p className="text-sm text-gray-500 mb-1">UID: {uid}</p>
 
@@ -220,8 +206,8 @@ useEffect(() => {
                   Salvar Ficha
                 </button>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
       )}
     </div>
