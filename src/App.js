@@ -32,14 +32,22 @@ function App() {
   const [password, setPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((usr) => {
-      setUser(usr);
-      if (usr) setViewingUid(usr.uid);
-      else setViewingUid(null);
-    });
-    return () => unsubscribe();
-  }, []);
+useEffect(() => {
+  const unsubscribe = auth.onAuthStateChanged(async (usr) => {
+    setUser(usr);
+    if (usr) {
+      setViewingUid(usr.uid);
+
+      if (usr.uid === UID_MESTRE) {
+        const todasAsFichas = await carregarTodasFichas();
+        setFichasMestre(todasAsFichas);
+      }
+    } else {
+      setViewingUid(null);
+    }
+  });
+  return () => unsubscribe();
+}, []);
 
   const fetchFicha = async (uidAlvo) => {
     if (user && uidAlvo) {

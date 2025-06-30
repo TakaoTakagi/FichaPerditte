@@ -1,5 +1,16 @@
 import { db } from './firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { getDatabase, ref, get, child } from "firebase/database";
+
+export const carregarTodasFichas = async () => {
+  const dbRef = ref(getDatabase());
+  const snapshot = await get(child(dbRef, `fichas`));
+  if (snapshot.exists()) {
+    return snapshot.val(); // Isso retorna um objeto onde cada chave é um UID
+  } else {
+    return {};
+  }
+};
 
 const UID_MESTRE = "qE5LJAbFhMabgBuoYNx9w9pSwv52";
 
