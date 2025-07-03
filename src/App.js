@@ -129,7 +129,7 @@ function App() {
   const isMestre = user.uid === UID_MESTRE;
 
   return (
-    <div className="p-8">
+  <div className="relative w-[3000px] h-[3000px] overflow-auto p-8 bg-slate-100">
       <div className="flex items-center gap-4">
         <p>Logado como: {user.email}</p>
         <button onClick={() => auth.signOut()} className="bg-red-500 text-white px-4 py-1 rounded">Sair</button>
