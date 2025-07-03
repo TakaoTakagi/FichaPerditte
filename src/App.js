@@ -160,24 +160,18 @@ function App() {
         </>
       )}
 
-      {isMestre && (
-        <div
-          style={{
-            position: "relative",
-            width: "100%",
-            height: "3200px",
-            overflow: "auto"
-          }}
-        >
-          {Object.entries(fichasMestre).map(([uid, ficha]) => {
-            const { offsetX, offsetY } = getOffsetForUID(uid);
+{isMestre && (
+  <div className="relative w-[2000px] h-[3200px] overflow-auto border bg-gray-50">
+    {Object.entries(fichasMestre).map(([uid, ficha]) => {
+      const { offsetX, offsetY } = getOffsetForUID(uid);
 
-            return (
-              <div
-                key={uid}
-                className="absolute border rounded p-4 shadow bg-white"
-                style={{ top: `${offsetY}px`, left: `${offsetX}px`, width: '360px' }}
-              >
+      return (
+        <div
+          key={uid}
+          className="absolute border rounded p-4 shadow bg-white"
+          style={{ top: `${offsetY}px`, left: `${offsetX}px`, width: '360px' }}
+        >
+        
                 <p className="text-sm text-gray-500 mb-1">UID: {uid}</p>
 
                 <label className="text-sm font-semibold block">Nome do personagem:</label>
