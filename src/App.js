@@ -17,6 +17,7 @@ const personagemPadrao = {
     rightLeg: { current: 6, max: 6 }
   }
 };
+
 const uidPositions = {
   "9alpBBqtSLVIlfgr6IYRmKuC97D3": { offsetX: 0, offsetY: 0 },          // Amon
   "PUoxancHbcTjUOADvbsAn396imt2": { offsetX: 420, offsetY: 0 },        // Silver
@@ -26,7 +27,7 @@ const uidPositions = {
 };
 
 const getOffsetForUID = (uid) => {
-  return uidPositions[uid] || { offsetX: 0, offsetY: 0 }; // Default se UID não for encontrado
+  return uidPositions[uid] || { offsetX: 0, offsetY: 0 }; // Posição padrão
 };
 
 function App() {
@@ -128,7 +129,7 @@ function App() {
   const isMestre = user.uid === UID_MESTRE;
 
   return (
-    <div className="flex flex-col gap-8 p-8">
+    <div className="p-8">
       <div className="flex items-center gap-4">
         <p>Logado como: {user.email}</p>
         <button onClick={() => auth.signOut()} className="bg-red-500 text-white px-4 py-1 rounded">Sair</button>
@@ -160,7 +161,14 @@ function App() {
       )}
 
       {isMestre && (
-        <div className="relative" style={{ minHeight: "3200px" }}>
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "3200px",
+            overflow: "auto"
+          }}
+        >
           {Object.entries(fichasMestre).map(([uid, ficha]) => {
             const { offsetX, offsetY } = getOffsetForUID(uid);
 
