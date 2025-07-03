@@ -160,8 +160,8 @@ function App() {
         </>
       )}
 
-{isMestre && (
-  <div className="relative w-[2000px] h-[3200px] overflow-auto border bg-gray-50">
+ {isMestre && (
+  <div className="relative w-[2000px] h-[2000px] border border-gray-400 bg-gray-100">
     {Object.entries(fichasMestre).map(([uid, ficha]) => {
       const { offsetX, offsetY } = getOffsetForUID(uid);
 
@@ -171,50 +171,49 @@ function App() {
           className="absolute border rounded p-4 shadow bg-white"
           style={{ top: `${offsetY}px`, left: `${offsetX}px`, width: '360px' }}
         >
-        
-                <p className="text-sm text-gray-500 mb-1">UID: {uid}</p>
+          <p className="text-sm text-gray-500 mb-1">UID: {uid}</p>
 
-                <label className="text-sm font-semibold block">Nome do personagem:</label>
-                <input
-                  type="text"
-                  value={ficha.nome || "Sobrevivente"}
-                  onChange={(e) => {
-                    const novoNome = e.target.value;
-                    setFichasMestre(prev => ({
-                      ...prev,
-                      [uid]: { ...prev[uid], nome: novoNome }
-                    }));
-                  }}
-                  className="border px-2 py-1 rounded w-full mb-4"
-                />
+          <label className="text-sm font-semibold block">Nome do personagem:</label>
+          <input
+            type="text"
+            value={ficha.nome || "Sobrevivente"}
+            onChange={(e) => {
+              const novoNome = e.target.value;
+              setFichasMestre(prev => ({
+                ...prev,
+                [uid]: { ...prev[uid], nome: novoNome }
+              }));
+            }}
+            className="border px-2 py-1 rounded w-full mb-4"
+          />
 
-                <div className="w-full text-center text-xl font-bold mb-6">
-                  {ficha.nome || "Sobrevivente"}
-                </div>
+          <div className="w-full text-center text-xl font-bold mb-6">
+            {ficha.nome || "Sobrevivente"}
+          </div>
 
-                <CharacterSheet
-                  personagem={ficha}
-                  setPersonagem={(novaFicha) =>
-                    setFichasMestre(prev => ({
-                      ...prev,
-                      [uid]: { ...novaFicha }
-                    }))
-                  }
-                />
+          <CharacterSheet
+            personagem={ficha}
+            setPersonagem={(novaFicha) =>
+              setFichasMestre(prev => ({
+                ...prev,
+                [uid]: { ...novaFicha }
+              }))
+            }
+          />
 
-                <button
-                  onClick={() =>
-                    salvarFicha(uid, ficha, user.uid).then(() => alert("Ficha salva!")).catch(err => alert(err.message))
-                  }
-                  className="mt-4 bg-green-600 text-white px-4 py-2 rounded w-full"
-                >
-                  Salvar Ficha
-                </button>
-              </div>
-            );
-          })}
+          <button
+            onClick={() =>
+              salvarFicha(uid, ficha, user.uid).then(() => alert("Ficha salva!")).catch(err => alert(err.message))
+            }
+            className="mt-4 bg-green-600 text-white px-4 py-2 rounded w-full"
+          >
+            Salvar Ficha
+          </button>
         </div>
-      )}
+      );
+    })}
+  </div>
+)}
     </div>
   );
 }
