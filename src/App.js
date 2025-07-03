@@ -17,13 +17,16 @@ const personagemPadrao = {
     rightLeg: { current: 6, max: 6 }
   }
 };
+const uidPositions = {
+  "9alpBBqtSLVIlfgr6IYRmKuC97D3": { offsetX: 0, offsetY: 0 },          // Amon
+  "PUoxancHbcTjUOADvbsAn396imt2": { offsetX: 420, offsetY: 0 },        // Silver
+  "TxPgxqzRKjbilpDnjQnbGNQ2hpU2": { offsetX: 0, offsetY: 1000 },       // Rosa
+  "ohmZCQQ7mMQDuLToK2tU0S2mpp02": { offsetX: 420, offsetY: 1000 },     // Dr. Gene
+  // Adicione mais UIDs aqui conforme necessário
+};
 
-// Função auxiliar para gerar posição baseada na UID
 const getOffsetForUID = (uid) => {
-  const base = uid.charCodeAt(0) + uid.charCodeAt(1) + uid.charCodeAt(2);
-  const offsetX = (base % 5) * 420;
-  const offsetY = (base % 4) * 1000;
-  return { offsetX, offsetY };
+  return uidPositions[uid] || { offsetX: 0, offsetY: 0 }; // Default se UID não for encontrado
 };
 
 function App() {
