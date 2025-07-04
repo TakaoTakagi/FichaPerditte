@@ -19,11 +19,12 @@ const personagemPadrao = {
 };
 
 const uidPositions = {
-  "9alpBBqtSLVIlfgr6IYRmKuC97D3": { offsetX: 0, offsetY: 0 },          // Amon
-  "PUoxancHbcTjUOADvbsAn396imt2": { offsetX: 420, offsetY: 0 },        // Silver
-  "TxPgxqzRKjbilpDnjQnbGNQ2hpU2": { offsetX: 0, offsetY: 1000 },       // Rosa
-  "ohmZCQQ7mMQDuLToK2tU0S2mpp02": { offsetX: 420, offsetY: 1000 },     // Dr. Gene
-  // Adicione mais UIDs aqui conforme necessário
+  "9alpBBqtSLVIlfgr6IYRmKuC97D3": { offsetX: 0, offsetY: 100 },          // Amon
+  "PUoxancHbcTjUOADvbsAn396imt2": { offsetX: 420, offsetY: 100 },        // Silver
+  "TxPgxqzRKjbilpDnjQnbGNQ2hpU2": { offsetX: 840, offsetY: 100 },        // Rosa
+  "ohmZCQQ7mMQDuLToK2tU0S2mpp02": { offsetX: 0, offsetY: 1000 },         // Dr. Gene
+  "qE5LJAbFhMabgBuoYNx9w9pSwv52": { offsetX: 420, offsetY: 1000 },       // Mestre
+  // Adicione mais se necessário
 };
 
 const getOffsetForUID = (uid) => {
