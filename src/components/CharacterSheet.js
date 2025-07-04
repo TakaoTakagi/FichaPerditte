@@ -154,12 +154,12 @@ const CharacterSheet = ({ personagem, setPersonagem }) => {
     return <p>Carregando ficha...</p>;
   }
 
-  return (
-    <div className="flex flex-col items-center px-4 relative">
-      {/* Nome centralizado acima do boneco, visível sempre */}
-      <div className="text-center font-bold text-lg mb-1">
-        {personagem.nome || "Sem Nome"}
-      </div>
+return (
+  <div className="relative w-[262px] h-[640px] bg-transparent" style={{ zIndex: 10 }}>
+    {/* Nome centralizado acima do boneco */}
+    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-center font-bold text-lg z-50">
+      {personagem.nome || "Sem Nome"}
+    </div>
 
       <div className="relative w-[262px] h-[616px] bg-transparent">
         {renderPart('head', '9px', '84px', '95px')}
