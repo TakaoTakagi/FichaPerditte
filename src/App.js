@@ -24,7 +24,6 @@ const uidPositions = {
   "TxPgxqzRKjbilpDnjQnbGNQ2hpU2": { offsetX: 840, offsetY: 100 },        // Rosa
   "ohmZCQQ7mMQDuLToK2tU0S2mpp02": { offsetX: 0, offsetY: 1000 },         // Dr. Gene
   "qE5LJAbFhMabgBuoYNx9w9pSwv52": { offsetX: 420, offsetY: 1000 },       // Mestre
-  // Adicione mais se necessário
 };
 
 const getOffsetForUID = (uid) => {
@@ -164,65 +163,77 @@ function App() {
 {isMestre && (
   <div className="relative w-[3000px] h-[3000px] border border-gray-400 bg-gray-100">
 
-    {/* AMON */}
-    {fichasMestre["9alpBBqtSLVIlfgr6IYRmKuC97D3"] && (
-      <div className="absolute" style={{ top: '0px', left: '0px' }}>
-        <CharacterSheet
-          personagem={fichasMestre["9alpBBqtSLVIlfgr6IYRmKuC97D3"]}
-          setPersonagem={(novaFicha) =>
-            setFichasMestre(prev => ({
-              ...prev,
-              "9alpBBqtSLVIlfgr6IYRmKuC97D3": { ...novaFicha }
-            }))
-          }
-        />
-      </div>
-    )}
+{/* AMON */}
+{fichasMestre["9alpBBqtSLVIlfgr6IYRmKuC97D3"] && (() => {
+  const { offsetX, offsetY } = getOffsetForUID("9alpBBqtSLVIlfgr6IYRmKuC97D3");
+  return (
+    <div className="absolute" style={{ top: `${offsetY}px`, left: `${offsetX}px` }}>
+      <CharacterSheet
+        personagem={fichasMestre["9alpBBqtSLVIlfgr6IYRmKuC97D3"]}
+        setPersonagem={(novaFicha) =>
+          setFichasMestre(prev => ({
+            ...prev,
+            "9alpBBqtSLVIlfgr6IYRmKuC97D3": { ...novaFicha }
+          }))
+        }
+      />
+    </div>
+  );
+})()}
 
-    {/* SILVER */}
-    {fichasMestre["PUoxancHbcTjUOADvbsAn396imt2"] && (
-      <div className="absolute" style={{ top: '0px', left: '500px' }}>
-        <CharacterSheet
-          personagem={fichasMestre["PUoxancHbcTjUOADvbsAn396imt2"]}
-          setPersonagem={(novaFicha) =>
-            setFichasMestre(prev => ({
-              ...prev,
-              "PUoxancHbcTjUOADvbsAn396imt2": { ...novaFicha }
-            }))
-          }
-        />
-      </div>
-    )}
+{/* SILVER */}
+{fichasMestre["PUoxancHbcTjUOADvbsAn396imt2"] && (() => {
+  const { offsetX, offsetY } = getOffsetForUID("PUoxancHbcTjUOADvbsAn396imt2");
+  return (
+    <div className="absolute" style={{ top: `${offsetY}px`, left: `${offsetX}px` }}>
+      <CharacterSheet
+        personagem={fichasMestre["PUoxancHbcTjUOADvbsAn396imt2"]}
+        setPersonagem={(novaFicha) =>
+          setFichasMestre(prev => ({
+            ...prev,
+            "PUoxancHbcTjUOADvbsAn396imt2": { ...novaFicha }
+          }))
+        }
+      />
+    </div>
+  );
+})()}
 
-    {/* ROSA */}
-    {fichasMestre["TxPgxqzRKjbilpDnjQnbGNQ2hpU2"] && (
-      <div className="absolute" style={{ top: '0px', left: '1000px' }}>
-        <CharacterSheet
-          personagem={fichasMestre["TxPgxqzRKjbilpDnjQnbGNQ2hpU2"]}
-          setPersonagem={(novaFicha) =>
-            setFichasMestre(prev => ({
-              ...prev,
-              "TxPgxqzRKjbilpDnjQnbGNQ2hpU2": { ...novaFicha }
-            }))
-          }
-        />
-      </div>
-    )}
+{/* ROSA */}
+{fichasMestre["TxPgxqzRKjbilpDnjQnbGNQ2hpU2"] && (() => {
+  const { offsetX, offsetY } = getOffsetForUID("TxPgxqzRKjbilpDnjQnbGNQ2hpU2");
+  return (
+    <div className="absolute" style={{ top: `${offsetY}px`, left: `${offsetX}px` }}>
+      <CharacterSheet
+        personagem={fichasMestre["TxPgxqzRKjbilpDnjQnbGNQ2hpU2"]}
+        setPersonagem={(novaFicha) =>
+          setFichasMestre(prev => ({
+            ...prev,
+            "TxPgxqzRKjbilpDnjQnbGNQ2hpU2": { ...novaFicha }
+          }))
+        }
+      />
+    </div>
+  );
+})()}
 
-    {/* DR. GENE */}
-    {fichasMestre["ohmZCQQ7mMQDuLToK2tU0S2mpp02"] && (
-      <div className="absolute" style={{ top: '700px', left: '0px' }}>
-        <CharacterSheet
-          personagem={fichasMestre["ohmZCQQ7mMQDuLToK2tU0S2mpp02"]}
-          setPersonagem={(novaFicha) =>
-            setFichasMestre(prev => ({
-              ...prev,
-              "ohmZCQQ7mMQDuLToK2tU0S2mpp02": { ...novaFicha }
-            }))
-          }
-        />
-      </div>
-    )}
+{/* DR. GENE */}
+{fichasMestre["ohmZCQQ7mMQDuLToK2tU0S2mpp02"] && (() => {
+  const { offsetX, offsetY } = getOffsetForUID("ohmZCQQ7mMQDuLToK2tU0S2mpp02");
+  return (
+    <div className="absolute" style={{ top: `${offsetY}px`, left: `${offsetX}px` }}>
+      <CharacterSheet
+        personagem={fichasMestre["ohmZCQQ7mMQDuLToK2tU0S2mpp02"]}
+        setPersonagem={(novaFicha) =>
+          setFichasMestre(prev => ({
+            ...prev,
+            "ohmZCQQ7mMQDuLToK2tU0S2mpp02": { ...novaFicha }
+          }))
+        }
+      />
+    </div>
+  );
+})()}
 
     {/* Você pode continuar adicionando mais UIDs com top/left personalizados aqui */}
 
