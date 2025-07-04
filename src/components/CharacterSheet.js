@@ -157,13 +157,13 @@ const CharacterSheet = ({ personagem, setPersonagem }) => {
   return (
     <div className="flex flex-col items-center px-4">
       <div className="text-center font-bold text-lg mb-1">{personagem.nome || "Sem Nome"}</div>
-     <div className="relative w-[262px] h-[616px] bg-transparent">
-  {renderPart('head', '9px', '84px', '95px')}
-  {renderPart('torso', '95px', '60px', '142px')}
-  {renderPart('leftArm', '129px', '4px', '56px')}
-  {renderPart('rightArm', '129px', '202px', '56px')}
-  {renderPart('leftLeg', '284px', '50px', '70px')}
-  {renderPart('rightLeg', '284px', '130px', '70px')}
+      <div className="relative w-[262px] h-[616px] bg-transparent">
+      {renderPart('head', '9px', '84px', '95px')}
+      {renderPart('torso', '95px', '60px', '142px')}
+      {renderPart('leftArm', '129px', '26px', '56px')}
+      {renderPart('rightArm', '129px', '182px', '56px')}
+      {renderPart('leftLeg', '284px', '62px', '70px')}
+      {renderPart('rightLeg', '284px', '130px', '70px')}
 </div>
     </div>
   );
